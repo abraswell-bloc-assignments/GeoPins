@@ -1,11 +1,38 @@
-import React from "react";
+import React, { useContext } from "react";
+import Context from '../../context'
 import { withStyles } from "@material-ui/core/styles";
-// import ExitToApp from "@material-ui/icons/ExitToApp";
-// import Typography from "@material-ui/core/Typography";
+import { GoogleLogout } from 'react-google-login'
+
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import Typography from "@material-ui/core/Typography";
+
+
+
 
 const Signout = ({ classes }) => {
-  return <div>Signout</div>;
-};
+  const { dispatch } = useContext(Context)
+
+  const handleSignout = () => {
+    dispatch({ type: 'SIGNOUT_USER' })
+    console.log('signed out')
+  }
+
+  return (
+    <GoogleLogout
+      onLogoutSuccess={handleSignout}
+      render={({ onClick }) => (
+        //* 'onClick' does NOT trigger a custom function, it triggers the GoogleLogout component to signout the user..."magic"
+        <span className={classes.root} onClick={onClick}>
+          <Typography variant="body1" className={classes.buttonText}>
+            Signout
+          </Typography>
+          <ExitToApp className={classes.buttonIcon} />
+        </span>
+      )}
+    />
+  )
+}
+
 
 const styles = {
   root: {
