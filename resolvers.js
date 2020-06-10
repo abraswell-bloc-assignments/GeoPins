@@ -1,5 +1,4 @@
 const { AuthenticationError } = require('apollo-server')
-const Pin = require('./models/Pin')
 
 //* a Higher-Order-Function that will wrap all resolver functions. Checks there is a verified user on context. If so, returns the resolver function it wrapped, otherwise throws an Error.
 const authenticated = resolverFunc => (root, args, ctx, info) => {
@@ -12,15 +11,20 @@ const authenticated = resolverFunc => (root, args, ctx, info) => {
 module.exports = {
   Query: {
     me: authenticated((root, args, ctx) => ctx.currentUser),
+    getPins: async (root, args, { Pin }) => {
+      return Pin.find({})
+        .populate('author')
+        .populate('comments.author')
+    },
   },
   Mutation: {
-    createPin: authenticated(async (root, args, ctx) => {
+    createPin: authenticated(async (root, { input }, { currentUser, Pin }) => {
       const newPin = await new Pin({
-        ...args.input,
-        author: ctx.currentUser._id
+        ...input,
+        author: currentUser._id,
       }).save()
-      const pinAdded = await Pin.populate(newPin, 'author')
-      return pinAdded
-    })
-  }
+
+      return Pin.populate(newPin, 'author')
+    }),
+  },
 }

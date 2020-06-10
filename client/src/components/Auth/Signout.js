@@ -1,13 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react'
 import Context from '../../context'
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from '@material-ui/core/styles'
+
 import { GoogleLogout } from 'react-google-login'
-
-import ExitToApp from "@material-ui/icons/ExitToApp";
-import Typography from "@material-ui/core/Typography";
-
-
-
+import ExitToApp from '@material-ui/icons/ExitToApp'
+import Typography from '@material-ui/core/Typography'
 
 const Signout = ({ classes }) => {
   const { dispatch } = useContext(Context)
@@ -33,19 +30,18 @@ const Signout = ({ classes }) => {
   )
 }
 
-
 const styles = {
   root: {
-    cursor: "pointer",
-    display: "flex"
+    cursor: 'pointer',
+    display: 'flex',
   },
   buttonText: {
-    color: "orange"
+    color: 'orange',
   },
   buttonIcon: {
-    marginLeft: "5px",
-    color: "orange"
-  }
-};
+    marginLeft: '5px',
+    color: 'orange',
+  },
+}
 
-export default withStyles(styles)(Signout);
+export default withStyles(styles)(Signout)

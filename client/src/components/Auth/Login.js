@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import Context from '../../context'
 import { GraphQLClient } from 'graphql-request'
+import { BASE_URL } from '../../graphql/client'
 import { ME_QUERY } from '../../graphql/queries'
 
 import { withStyles } from '@material-ui/core/styles'
@@ -10,19 +11,20 @@ import Typography from '@material-ui/core/Typography'
 
 const Login = ({ classes }) => {
   const { dispatch } = useContext(Context)
-  
+
   const handleSuccess = async googleUser => {
     try {
       // grab the successfully logged-in user's Google idToken
       const idToken = googleUser.getAuthResponse().id_token
       // create a GraphQL Client object, pass it the token as an auth header
-      const client = new GraphQLClient('http://localhost:4000/graphql', {
+      const client = new GraphQLClient(BASE_URL, {
         headers: {
           authorization: idToken,
         },
       })
       // query the server (server verifies token, finds or creates a User, returns user's info)
       const { me } = await client.request(ME_QUERY)
+      console.log(me)
       // add the user's info to 'currentUser' field in state
       dispatch({ type: 'LOGIN_USER', payload: me })
       dispatch({ type: 'IS_LOGGED_IN', payload: googleUser.isSignedIn() })
@@ -32,8 +34,8 @@ const Login = ({ classes }) => {
   }
 
   const handleFailure = err => console.error('Error logging in', err)
-  console.log('login')
-  return ( 
+
+  return (
     <div className={classes.root}>
       <Typography
         component="h1"
