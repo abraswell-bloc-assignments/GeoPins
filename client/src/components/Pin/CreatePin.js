@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { useClient } from '../../graphql/client'
-
-import { CREATE_PIN } from '../../graphql/mutations'
+import { CREATE_PIN_MUTATION } from '../../graphql/mutations'
 
 import { withStyles } from '@material-ui/core/styles'
 import Context from '../../context'
@@ -36,10 +35,10 @@ const CreatePin = ({ classes }) => {
     const data = new FormData()
     data.append('file', image)
     data.append('upload_preset', 'geopins')
-    data.append('cloud_name', 'amy-braswell')
+    data.append('cloud_name', 'ndstephens')
 
     const res = await axios.post(
-      'https://api.cloudinary.com/v1_1/amy-braswell/image/upload',
+      'https://api.cloudinary.com/v1_1/ndstephens/image/upload',
       data
     )
     return res.data.url
@@ -61,8 +60,8 @@ const CreatePin = ({ classes }) => {
         longitude: draft.longitude,
       }
       // send mutation to create new Pin, grab response
-      const { createPin } = await client.request(CREATE_PIN, variables)
-      // add new Pin to 'pins' in state
+      const { createPin } = await client.request(CREATE_PIN_MUTATION, variables)
+      // add new Pin to 'pins' in state, AND set as 'newPin' in state
       dispatch({ type: 'CREATE_PIN', payload: createPin })
       // clear draft pin data from state/context
       handleDeleteDraft()

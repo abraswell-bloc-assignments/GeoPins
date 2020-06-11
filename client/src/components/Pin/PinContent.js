@@ -1,26 +1,31 @@
-import React, { useContext } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import FaceIcon from "@material-ui/icons/Face";
+import React, { useContext } from 'react'
 import format from 'date-fns/format'
 
 import Context from '../../context'
+import { withStyles } from '@material-ui/core/styles'
+
+import CreateComment from '../Comment/CreateComment'
+import Comments from '../Comment/Comments'
+
+import Typography from '@material-ui/core/Typography'
+import AccessTimeIcon from '@material-ui/icons/AccessTime'
+import FaceIcon from '@material-ui/icons/Face'
 
 const PinContent = ({ classes }) => {
-  const{ state } = useContext(Context)
-  const { title, content, author, createdAt, comments } = state.currentPin
+  const {
+    state: {
+      currentPin: { title, content, author, createdAt, comments },
+    },
+  } = useContext(Context)
+
   return (
     <div className={classes.root}>
-      <Typography 
-        component= "h2"  
-        variant= "h4"
-        color= "primary"
-        gutterBottom
-      >
+      {/* TITLE */}
+      <Typography component="h2" variant="h4" color="primary" gutterBottom>
         {title}
       </Typography>
 
+      {/* AUTHOR NAME */}
       <Typography
         className={classes.text}
         component="h3"
@@ -31,6 +36,7 @@ const PinContent = ({ classes }) => {
         <FaceIcon className={classes.icon} /> {author.name}
       </Typography>
 
+      {/* CREATED AT DATE */}
       <Typography
         className={classes.text}
         variant="subtitle2"
@@ -38,34 +44,38 @@ const PinContent = ({ classes }) => {
         gutterBottom
       >
         <AccessTimeIcon className={classes.icon} />
-        {format(Number(createdAt), "MMM Do, YYYY")}
+        {format(+createdAt, 'MMM Do, YYYY')}
       </Typography>
 
-      <Typography
-        variant="subtitle1"
-        gutterBottom
-      >
+      {/* CONTENT */}
+      <Typography variant="subtitle1" gutterBottom>
         {content}
       </Typography>
+
+      {/* CREATE COMMENTS FORM */}
+      <CreateComment />
+
+      {/* COMMENTS */}
+      <Comments comments={comments} />
     </div>
   )
-};
+}
 
 const styles = theme => ({
   root: {
-    padding: "1em 0.5em",
-    textAlign: "center",
-    width: "100%"
+    padding: '1em 0.5em',
+    textAlign: 'center',
+    width: '100%',
   },
   icon: {
     marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing.unit,
   },
   text: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 
-export default withStyles(styles)(PinContent);
+export default withStyles(styles)(PinContent)

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { useClient } from '../graphql/client'
 import { GET_PINS } from '../graphql/queries'
-import { DELETE_PIN} from '../graphql/mutations'
+import { DELETE_PIN_MUTATION} from '../graphql/mutations'
 import diffInMinutes from 'date-fns/difference_in_minutes'
 
 import Context from '../context'
@@ -83,7 +83,7 @@ const Map = ({ classes }) => {
 
   const handleDeletePin = async pinId => {
     const variables = { pinId }
-    const { deletePin } = await client.request(DELETE_PIN, variables)
+    const { deletePin } = await client.request(DELETE_PIN_MUTATION, variables)
     dispatch({ type: 'DELETE_PIN', payload: deletePin._id })
     setPopupPin(null)
   }
