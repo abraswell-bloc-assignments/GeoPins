@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import { useClient } from '../graphql/client'
 import { GET_PINS } from '../graphql/queries'
+import { DELETE_PIN} from '../graphql/mutations'
 import diffInMinutes from 'date-fns/difference_in_minutes'
 
 import Context from '../context'
@@ -39,7 +40,7 @@ const Map = ({ classes }) => {
     getUserPosition()
   }, [])
 
-  const [popup, setPopup] = useState(null)
+  const [popupPin, setPopupPin] = useState(null)
 
   const getPins = async () => {
     const { getPins } = await client.request(GET_PINS)
@@ -74,11 +75,18 @@ const Map = ({ classes }) => {
   }
 
   const handleSelectPin = pin => {
-    setPopup(pin)
+    setPopupPin(pin)
     dispatch({ type: "SET_PIN", payload: pin })
   }
 
-  const isAuthUser = () => currentUser._id === popup.author._id
+  const isAuthUser = () => currentUser._id === popupPin.author._id
+
+  const handleDeletePin = async pinId => {
+    const variables = { pinId }
+    const { deletePin } = await client.request(DELETE_PIN, variables)
+    dispatch({ type: 'DELETE_PIN', payload: deletePin._id })
+    setPopupPin(null)
+  }
 
   return (
     <div className={classes.root}>
@@ -139,26 +147,27 @@ const Map = ({ classes }) => {
         ))}
 
           {/* Popup Dialog for Created Pins  */}
-          {popup && (
-            <Popup 
+          {popupPin && (
+            <Popup
               anchor="top"
-              latitude={popup.latitude}
-              longitude={popup.longitude}
+              latitude={popupPin.latitude}
+              longitude={popupPin.longitude}
               closeOnClick={false}
-              onClose={() => setPopup(null)}
+              onClose={() => setPopupPin(null)}
             >
               <img 
                 className={classes.popupImage}
-                src={popup.image}
-                alt={popup.title}
+                src={popupPin.image}
+                alt={popupPin.title}
               />
               <div className={classes.popupTab}>
+              <h3>{popupPin.title}</h3>
                 <Typography>
-                  {popup.latitude.toFixed(6)}, {popup.longitude.toFixed(6)}
+                  {popupPin.latitude.toFixed(6)}, {popupPin.longitude.toFixed(6)}
                 </Typography>
                 {isAuthUser() && (
-                  <Button>
-                    <DeleteIcon className={classes.DeleteIcon}/>
+                  <Button onClick={e => handleDeletePin(popupPin._id)}>
+                    <DeleteIcon className={classes.deleteIcon} />
                   </Button>
                 )}
               </div>
